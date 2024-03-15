@@ -7,6 +7,7 @@ function Nav() {
         <nav className='mb-10 py-5 bg-blue-400'>
             <div className='container mx-auto'>
                 <NavLink className={activeClass} to="/">Home</NavLink>
+                <NavLink className={activeClass} to="/bookings">Bookings</NavLink>
             </div>
         </nav>
     )

@@ -43,29 +43,48 @@ function Home() {
             })
     }, []);
 
+    function resetFilters() {
+        setGuestsFilter(null)
+        setTypeFilter(null)
+        setStartFilter(null)
+        setEndFilter(null)
+    }
+
     return (
         <>
-            <div>
-                <label htmlFor='guests'># of guests</label>
-                <input className='border border-1 p-2' type='number' id='guests'
-                       onChange={e => setGuestsFilter(e.target.value)}/>
+            <div className='container mx-auto flex items-center justify-between'>
+                <div>
+                    <label className='mr-2' htmlFor='guests'># of guests:</label>
+                    <input className='border border-1 p-2' type='number' id='guests' min='1'
+                           onChange={e => setGuestsFilter(e.target.value)} value={guestsFilter ?? ''}/>
+                </div>
 
-                <label htmlFor='types'>Room type</label>
-                <select className='border border-1 p-2' id='types' onChange={e => setTypeFilter(e.target.value)}>
-                    {types.map(type => <option key={type.id} value={type.id}>{type.name}</option>)}
-                </select>
+                <div>
+                    <label className='mr-2' htmlFor='types'>Room type:</label>
+                    <select className='border border-1 p-2' id='types' onChange={e => setTypeFilter(e.target.value)}>
+                        {typeFilter === null ? <option selected>Select</option> : <option>Select</option>}
+                        {types.map(type => <option key={type.id} value={type.id}>{type.name}</option>)}
+                    </select>
+                </div>
 
+                <div>
+                    <label className='mr-2' htmlFor='start'>Available from:</label>
+                    <input className='border border-1 p-2' type='date' id='start'
+                           onChange={e => setStartFilter(e.target.value)} value={startFilter ?? 'mm/dd/yyyy'}/>
 
-                <label htmlFor='start'>Available from</label>
-                <input className='border border-1 p-2' type='date' id='start' onChange={e => setStartFilter(e.target.value)}/>
-                <label htmlFor='start'>Available to</label>
-                <input className='border border-1 p-2' type='date' id='end' onChange={e => setEndFilter(e.target.value)}/>
+                    <label className='mr-2 ml-2' htmlFor='start'>Available to:</label>
+                    <input className='border border-1 p-2' type='date' id='end'
+                           onChange={e => setEndFilter(e.target.value)} value={endFilter ?? 'mm/dd/yyyy'}/>
+                </div>
+
+                <button className='bg-blue-400 p-2 inline-block cursor-pointer' onClick={resetFilters}>Reset</button>
             </div>
 
-            <div className='container mx-auto grid grid-cols-3 gap-5'>
+            <div className='container mx-auto grid grid-cols-3 gap-5 mt-10'>
                 {rooms.map(room => <RoomListItem key={room.id} id={room.id} name={room.name} min={room.min_capacity}
                                                  max={room.max_capacity} type={room.type.name} image={room.image}/>)}
             </div>
+            {rooms.length === 0 && <div className='container mx-auto mt-20 text-center'><span className='text-4xl'>Sorry, no rooms found matching your search</span></div>}
         </>
 
     )
