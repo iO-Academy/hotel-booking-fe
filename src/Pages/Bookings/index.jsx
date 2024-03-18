@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import Booking from "./BookingsTable/Booking/index.jsx";
 import BookingsTable from "./BookingsTable/index.jsx";
+import Message from "../../Components/Message/index.jsx";
 
 function Bookings() {
     const [bookings, setBookings] = useState([])
@@ -72,7 +73,7 @@ function Bookings() {
             {
                 bookings.length !== 0 ?
                     <BookingsTable bookings={bookings} cancelBooking={cancelBooking} /> :
-                    <div className='container mx-auto mt-20 text-center'><span className='text-4xl'>No bookings found</span></div>
+                    <Message message='No bookings found' />
             }
 
         </div>
