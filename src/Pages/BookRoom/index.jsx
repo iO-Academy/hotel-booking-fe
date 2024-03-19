@@ -105,7 +105,7 @@ function BookRoom() {
                     </div>
                 </div>
                 <div className='text-center'>
-                    <input className='cursor-pointer bg-blue-400 text-xl px-5 py-2' type='submit' value='Book' />
+                    <input className='cursor-pointer bg-blue-400 hover:bg-blue-300 text-xl px-5 py-2' type='submit' value='Book' />
                 </div>
                 {successMessage && <p className='mt-5'>{successMessage}</p>}
                 {(errorMessage && !errors) && <p className='mt-5 text-red-700 text-xl'>Error: {errorMessage}</p>}

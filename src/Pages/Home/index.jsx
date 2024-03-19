@@ -14,6 +14,22 @@ function Home() {
 
     useEffect(() => {
         setErrorMessage(false)
+        let url = getRoomsFetchUrl();
+
+        fetchRooms(url);
+    }, [endFilter, guestsFilter, startFilter, typeFilter]);
+
+    useEffect(getTypes, []);
+
+    function getTypes() {
+        fetch('http://localhost:8000/api/types')
+            .then(res => res.json())
+            .then(data => {
+                setTypes(data.data)
+            })
+    }
+
+    function getRoomsFetchUrl() {
         let url = 'http://localhost:8000/api/rooms'
 
         if (guestsFilter || typeFilter || startFilter || endFilter) {
@@ -31,8 +47,10 @@ function Home() {
         if (startFilter && endFilter) {
             url += `start=${startFilter}&end=${endFilter}&`
         }
+        return url;
+    }
 
-
+    function fetchRooms(url) {
         fetch(url, {
             headers: {
                 Accept: 'application/json'
@@ -56,15 +74,7 @@ function Home() {
             .catch(error => {
                 setErrorMessage(error.message)
             })
-    }, [endFilter, guestsFilter, startFilter, typeFilter]);
-
-    useEffect(() => {
-        fetch('http://localhost:8000/api/types')
-            .then(res => res.json())
-            .then(data => {
-                setTypes(data.data)
-            })
-    }, []);
+    }
 
     function resetFilters() {
         setGuestsFilter(null)
@@ -109,7 +119,7 @@ function Home() {
 
                 </div>
 
-                <button className='bg-blue-400 p-2 inline-block cursor-pointer' onClick={resetFilters}>Reset</button>
+                <button className='bg-blue-400 hover:bg-blue-300 p-2 inline-block cursor-pointer' onClick={resetFilters}>Reset</button>
             </div>
 
             <div className='container mx-auto grid grid-cols-3 gap-5 mt-10'>

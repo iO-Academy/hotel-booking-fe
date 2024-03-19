@@ -19,7 +19,7 @@ function Booking({id, room, roomId, start, end, customer, cancel}) {
             <td className='border-1 border p-5'>
                 {customer}
             </td>
-            <td className='border-1 border p-5 bg-red-500 text-center' onClick={() => cancel(id)}>
+            <td className='border-1 border p-5 bg-red-500 text-center cursor-pointer' onClick={() => cancel(id)}>
                 Cancel Booking
             </td>
         </tr>

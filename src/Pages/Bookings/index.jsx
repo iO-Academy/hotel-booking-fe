@@ -7,6 +7,7 @@ function Bookings() {
     const [bookings, setBookings] = useState([])
     const [rooms, setRooms] = useState([])
     const [roomFilter, setRoomFilter] = useState(null)
+    const [cancelError, setCancelError] = useState(false)
 
     useEffect(getBookings, [roomFilter]);
     useEffect(getRooms, []);
@@ -35,17 +36,27 @@ function Bookings() {
     }
 
     function cancelBooking(id) {
+        setCancelError(false)
         fetch('http://localhost:8000/api/bookings/' + id, {
-            mode: 'cors',
             method: 'DELETE',
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(errorData => {
+                        throw new Error(errorData.message)
+                    })
+                }
+                return res.json()
+            })
             .then(data => {
                 getBookings()
+            })
+            .catch(error => {
+                setCancelError(error.message)
             })
     }
 
@@ -75,6 +86,8 @@ function Bookings() {
                     <BookingsTable bookings={bookings} cancelBooking={cancelBooking} /> :
                     <Message message='No bookings found' />
             }
+
+            {cancelError && <Message message={cancelError} error={true} /> }
 
         </div>
     )
