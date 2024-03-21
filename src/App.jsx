@@ -6,21 +6,36 @@ import BookRoom from "./Pages/BookRoom/index.jsx";
 import Bookings from "./Pages/Bookings/index.jsx";
 import Footer from "./Components/Footer/index.jsx";
 import Report from "./Pages/Report/index.jsx";
+import {useEffect, useState} from "react";
+import Message from "./Components/Message/index.jsx";
 
 function App() {
-    return (
-        <BrowserRouter>
-            <Nav />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/room/:id" element={<SingleRoom />} />
-                <Route path="/book/:id" element={<BookRoom />} />
-                <Route path="/bookings" element={<Bookings />} />
-                <Route path="/report" element={<Report />} />
-            </Routes>
+    const [apiActive, setApiActive] = useState(true)
 
-            <Footer />
-        </BrowserRouter>
+    useEffect(() => {
+        fetch('http://localhost:8000/api/rooms')
+            .catch(() => {
+                    setApiActive(false)
+            })
+    }, []);
+    return (
+        <>
+        {apiActive ? (
+            <BrowserRouter>
+                <Nav />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/room/:id" element={<SingleRoom />} />
+                    <Route path="/book/:id" element={<BookRoom />} />
+                    <Route path="/bookings" element={<Bookings />} />
+                    <Route path="/report" element={<Report />} />
+                </Routes>
+
+                <Footer />
+            </BrowserRouter>
+        ) : <Message message="Fatal error - API appears to be offline" error={true} /> }
+        </>
+
     )
 }
 
