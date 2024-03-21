@@ -5,6 +5,7 @@ import SingleRoom from "./Pages/SingleRoom/index.jsx";
 import BookRoom from "./Pages/BookRoom/index.jsx";
 import Bookings from "./Pages/Bookings/index.jsx";
 import Footer from "./Components/Footer/index.jsx";
+import Report from "./Pages/Report/index.jsx";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/room/:id" element={<SingleRoom />} />
                 <Route path="/book/:id" element={<BookRoom />} />
                 <Route path="/bookings" element={<Bookings />} />
+                <Route path="/report" element={<Report />} />
             </Routes>
 
             <Footer />

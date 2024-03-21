@@ -8,13 +8,18 @@ function BookRoom() {
     const [end, setEnd] = useState(null)
     const [customer, setCustomer] = useState('')
     const [guests, setGuests] = useState(0)
+
     const [successMessage, setSuccessMessage] = useState(false)
     const [errorMessage, setErrorMessage] = useState(false)
     const [errors, setErrors] = useState(false)
 
+    const fetchHeaders = useFetchHeaders()
+
     // Get the room details
     useEffect(() => {
-        fetch('http://localhost:8000/api/rooms/' + id)
+        fetch('http://localhost:8000/api/rooms/' + id, {
+            headers: fetchHeaders
+        })
             .then(res => res.json())
             .then(data => {
                 setRoomName(data.data.name)
@@ -24,7 +29,9 @@ function BookRoom() {
     useEffect(getBookings, [id]);
 
     function getBookings() {
-        fetch('http://localhost:8000/api/bookings?room_id=' + id)
+        fetch('http://localhost:8000/api/bookings?room_id=' + id, {
+            headers: fetchHeaders
+        })
             .then(res => res.json())
             .then(data => {
                 setBookings(data.data)
@@ -39,10 +46,7 @@ function BookRoom() {
 
         fetch('http://localhost:8000/api/bookings', {
             method: 'POST',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
+            headers: fetchHeaders,
             body: JSON.stringify({
                 room_id: id,
                 customer,
@@ -124,5 +128,6 @@ function BookRoom() {
 
 import {useEffect, useState} from "react";
 import Booking from "./Booking/index.jsx";
+import useFetchHeaders from "../../Hooks/useFetchHeaders.js";
 
 export default BookRoom

@@ -2,12 +2,14 @@ import {useEffect, useState} from "react";
 import Booking from "./BookingsTable/Booking/index.jsx";
 import BookingsTable from "./BookingsTable/index.jsx";
 import Message from "../../Components/Message/index.jsx";
+import useFetchHeaders from "../../Hooks/useFetchHeaders.js";
 
 function Bookings() {
     const [bookings, setBookings] = useState([])
     const [rooms, setRooms] = useState([])
     const [roomFilter, setRoomFilter] = useState(null)
     const [cancelError, setCancelError] = useState(false)
+    const fetchHeaders = useFetchHeaders()
 
     useEffect(getBookings, [roomFilter]);
     useEffect(getRooms, []);
@@ -19,7 +21,9 @@ function Bookings() {
             url += '?room_id=' + roomFilter
         }
 
-        fetch(url)
+        fetch(url, {
+            headers: fetchHeaders
+        })
             .then(res => res.json())
             .then(data => {
                 console.log(data)
@@ -28,7 +32,9 @@ function Bookings() {
     }
 
     function getRooms() {
-        fetch('http://localhost:8000/api/rooms')
+        fetch('http://localhost:8000/api/rooms', {
+            headers: fetchHeaders
+        })
             .then(res => res.json())
             .then(data => {
                 setRooms(data.data)
@@ -39,10 +45,7 @@ function Bookings() {
         setCancelError(false)
         fetch('http://localhost:8000/api/bookings/' + id, {
             method: 'DELETE',
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
+            headers: fetchHeaders,
         })
             .then(res => {
                 if (!res.ok) {

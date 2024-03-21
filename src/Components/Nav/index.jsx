@@ -8,6 +8,7 @@ function Nav() {
             <div className='container mx-auto'>
                 <NavLink className={activeClass} to="/">Home</NavLink>
                 <NavLink className={activeClass} to="/bookings">Bookings</NavLink>
+                <NavLink className={activeClass} to="/report">Report</NavLink>
             </div>
         </nav>
     )

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import RoomListItem from "./RoomListItem/index.jsx";
 import Message from "../../Components/Message/index.jsx";
 
@@ -10,13 +10,23 @@ function Home() {
     const [endFilter, setEndFilter] = useState(null)
     const [types, setTypes] = useState([])
     const [errorMessage, setErrorMessage] = useState(false)
-    const [errors, setErrors] = useState(false)
+    const [validationErrors, setValidationErrors] = useState(false)
+
+    const getRoomsFetchUrl = useMemo(() => {
+        const queryParams = []
+
+        if (guestsFilter) queryParams.push(`guests=${guestsFilter}`)
+        if (typeFilter) queryParams.push(`type=${typeFilter}`)
+        if (startFilter && endFilter) queryParams.push(`start=${startFilter}&end=${endFilter}`)
+
+        return queryParams.length > 0
+            ? `http://localhost:8000/api/rooms?${queryParams.join('&')}`
+            : 'http://localhost:8000/api/rooms';
+    }, [endFilter, guestsFilter, startFilter, typeFilter])
 
     useEffect(() => {
         setErrorMessage(false)
-        let url = getRoomsFetchUrl();
-
-        fetchRooms(url);
+        fetchRooms(getRoomsFetchUrl)
     }, [endFilter, guestsFilter, startFilter, typeFilter]);
 
     useEffect(getTypes, []);
@@ -27,27 +37,6 @@ function Home() {
             .then(data => {
                 setTypes(data.data)
             })
-    }
-
-    function getRoomsFetchUrl() {
-        let url = 'http://localhost:8000/api/rooms'
-
-        if (guestsFilter || typeFilter || startFilter || endFilter) {
-            url += '?'
-        }
-
-        if (guestsFilter) {
-            url += `guests=${guestsFilter}&`
-        }
-
-        if (typeFilter) {
-            url += `type=${typeFilter}&`
-        }
-
-        if (startFilter && endFilter) {
-            url += `start=${startFilter}&end=${endFilter}&`
-        }
-        return url;
     }
 
     function fetchRooms(url) {
@@ -61,7 +50,7 @@ function Home() {
                     return res.json().then(errorData => {
                         setRooms([])
                         if (res.status === 422) {
-                            setErrors(errorData.errors)
+                            setValidationErrors(errorData.errors)
                         }
                         throw new Error(errorData.message)
                     })
@@ -90,7 +79,7 @@ function Home() {
                     <label className='mr-2' htmlFor='guests'># of guests:</label>
                     <input className='border border-1 p-2' type='number' id='guests' min='1'
                            onChange={e => setGuestsFilter(e.target.value)} value={guestsFilter ?? ''}/>
-                    {errors.guests && <p className='text-red-700 absolute'>{errors.guests}</p>}
+                    {validationErrors.guests && <p className='text-red-700 absolute'>{validationErrors.guests}</p>}
                 </div>
 
                 <div>
@@ -99,7 +88,7 @@ function Home() {
                         {typeFilter === null ? <option selected>Select</option> : <option>Select</option>}
                         {types.map(type => <option key={type.id} value={type.id}>{type.name}</option>)}
                     </select>
-                    {errors.type && <p className='text-red-700 absolute'>{errors.type}</p>}
+                    {validationErrors.type && <p className='text-red-700 absolute'>{validationErrors.type}</p>}
                 </div>
 
                 <div className='flex'>
@@ -107,14 +96,14 @@ function Home() {
                         <label className='mr-2' htmlFor='start'>Available from:</label>
                         <input className='border border-1 p-2' type='date' id='start'
                                onChange={e => setStartFilter(e.target.value)} value={startFilter ?? 'mm/dd/yyyy'}/>
-                        {errors.start && <p className='text-red-700 absolute'>{errors.start}</p>}
+                        {validationErrors.start && <p className='text-red-700 absolute'>{validationErrors.start}</p>}
                     </div>
 
                     <div>
                         <label className='mr-2 ml-2' htmlFor='start'>Available to:</label>
                         <input className='border border-1 p-2' type='date' id='end'
                                onChange={e => setEndFilter(e.target.value)} value={endFilter ?? 'mm/dd/yyyy'}/>
-                        {errors.end && <p className='text-red-700 absolute'>{errors.end}</p>}
+                        {validationErrors.end && <p className='text-red-700 absolute'>{validationErrors.end}</p>}
                     </div>
 
                 </div>
@@ -126,7 +115,7 @@ function Home() {
                 {rooms.map(room => <RoomListItem key={room.id} id={room.id} name={room.name} min={room.min_capacity}
                                                  max={room.max_capacity} type={room.type.name} image={room.image}/>)}
             </div>
-            {(errorMessage && !errors) &&
+            {(errorMessage && !validationErrors) &&
                 <Message message={errorMessage} error={true} />
             }
             {(rooms.length === 0 && !errorMessage) &&
