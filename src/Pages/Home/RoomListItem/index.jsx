@@ -4,7 +4,7 @@ function RoomListItem({id, name, min, max, type, image}) {
     return (
         <div className='flex flex-col justify-center'>
             <Link to={'/room/' + id}>
-                <h3 className='text-3xl'>{name}</h3>
+                <h3 className='text-2xl'>{name}</h3>
                 <p>{min} - {max} guests</p>
                 <div className='relative mt-5'>
                     <img src={image}/>

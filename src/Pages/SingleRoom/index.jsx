@@ -1,10 +1,11 @@
-import {Link, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Message from "../../Components/Message/index.jsx";
 import LinkButton from "../../Components/LinkButton/index.jsx";
 
 function SingleRoom() {
     const {id} = useParams()
+
     const [name, setName] = useState('')
     const [type, setType] = useState('')
     const [description, setDescription] = useState('')
@@ -12,6 +13,7 @@ function SingleRoom() {
     const [min, setMin] = useState('')
     const [max, setMax] = useState('')
     const [rate, setRate] = useState('')
+
     const [error, setError] = useState(false)
 
 
