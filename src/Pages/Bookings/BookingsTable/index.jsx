@@ -1,6 +1,7 @@
 import Booking from "./Booking/index.jsx";
 
 function BookingsTable({bookings, cancelBooking}) {
+    console.log(bookings)
     return (
         <table className='border border-1 w-full mt-10'>
             <thead>
@@ -16,8 +17,8 @@ function BookingsTable({bookings, cancelBooking}) {
             {bookings.map(booking => <Booking
                 key={booking.id}
                 id={booking.id}
-                room={booking.room.name}
-                roomId={booking.room.id}
+                room={booking.rooms[0].name}
+                roomId={booking.rooms[0].id}
                 start={booking.start}
                 end={booking.end}
                 customer={booking.customer}
